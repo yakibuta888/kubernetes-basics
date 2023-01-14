@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: sample-apps
+spec:
+  generators:
+  - list:
+      elements:
+      - cluster: sample-app-manifests
+        url: https://kubernetes.default.svc
+      - cluster: mysql-manifests
+        url: https://kubernetes.default.svc
+  template:
+    metadata:
+      name: '{{cluster}}'
+      namespace: argocd
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+    spec:
+      project: test
+      source:
+        repoURL: https://github.com/yakibuta888/kubernetes-basics.git # Forkしている場合はnakamasatoを自分のGithubアカウントに変更してください
+        targetRevision: v2.0-rc
+        path: 09-cicd/{{cluster}}
+      destination:
+        server: '{{url}}'
+        namespace: default
+      syncPolicy:
+        automated: {}
