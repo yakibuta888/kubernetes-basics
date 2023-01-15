@@ -2,6 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
   name: sample-apps
+  namespace: argocd
 spec:
   generators:
   - list:
@@ -13,9 +14,6 @@ spec:
   template:
     metadata:
       name: '{{cluster}}'
-      namespace: argocd
-      finalizers:
-        - resources-finalizer.argocd.argoproj.io
     spec:
       project: test
       source:
